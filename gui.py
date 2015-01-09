@@ -5,14 +5,22 @@ import gtk
 class FrontEnd:
     def __init__(self):
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.vbox_main = gtk.VBox(True, 0)
+        self.add_button = gtk.Button(stock=gtk.STOCK_ADD)
 
         self.window.connect('delete_event', self.delete_event)
         self.window.connect('destroy', self.destroy)
 
         self.tracks = []
+
+        self.vbox_main.pack_start(self.add_button)
+        self.window.add(self.vbox_main)
+
         self.add_track()
 
         self.window.show()
+        self.vbox_main.show()
+        self.add_button.show()
 
     def add_track(self, widget=None, data=None):
         hbox = gtk.HBox(False, 0)
@@ -23,7 +31,7 @@ class FrontEnd:
         hbox.pack_end(button)
 
         self.tracks.append(hbox)
-        self.window.add(hbox)
+        self.vbox_main.pack_start(hbox)
 
         hbox.show()
         textbox.show()
