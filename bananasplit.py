@@ -1,6 +1,7 @@
 import sys
-import wave
 import gtk
+
+from front import BSplitFrontEnd
 
 def usage():
     print "Usage:"
@@ -13,8 +14,6 @@ if len(sys.argv) > 2:
 # Set up arguments
 if len(sys.argv) > 1:
     filename = sys.argv[1]
-else:
-    filename = "./Noise.wav"
 
-wavinfile = wave.open(filename)
-params = wavinfile.getparams()
+fe = BSplitFrontEnd()
+fe.main()
