@@ -73,6 +73,3 @@ class FrontEnd:
 
     def main(self):
         gtk.main()
-
-fe = FrontEnd()
-fe.main()

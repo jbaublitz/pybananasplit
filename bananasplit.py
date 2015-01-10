@@ -1,7 +1,7 @@
 import sys
 import gtk
 
-from front import BSplitFrontEnd
+from gui import FrontEnd
 
 def usage():
     print "Usage:"
@@ -15,5 +15,5 @@ if len(sys.argv) > 2:
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 
-fe = BSplitFrontEnd()
+fe = FrontEnd()
 fe.main()
