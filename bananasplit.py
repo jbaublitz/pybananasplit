@@ -12,8 +12,9 @@ if len(sys.argv) > 2:
     usage()
 
 # Set up arguments
+filename = None
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 
-fe = FrontEnd()
+fe = FrontEnd(filename)
 fe.main()

@@ -8,7 +8,7 @@ from datetime import datetime, time
 from splitter import TrackSplitter
 
 class FrontEnd:
-    def __init__(self):
+    def __init__(self, filename=None):
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.vbox_main = gtk.VBox(False, 0)
         self.add_button = gtk.Button(stock=gtk.STOCK_ADD)
@@ -17,6 +17,8 @@ class FrontEnd:
         self.filename = gtk.HBox(False, 0)
         self.filename_label = gtk.Label('File name: ')
         self.filename_entry = gtk.Entry(300)
+        if filename is not None:
+            self.filename_entry.set_text(filename)
         self.tracks = gtk.VBox(False, 0)
 
         self.window.connect('delete_event', self.delete_event)
