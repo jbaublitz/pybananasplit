@@ -92,6 +92,8 @@ class FrontEnd:
         except IOError, emsg:
             self.warning_dialog('WAV file split failed: %s' % emsg)
 
+        self.info_dialog('WAV file split complete!')
+
     def hbox_unpack(self, hbox):
         children = hbox.get_children()
         start_text = children[1].get_text()
@@ -122,6 +124,14 @@ class FrontEnd:
 
     def warning_dialog(self, msg):
         message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING)
+        message.set_markup(msg)
+        message.add_button(gtk.STOCK_OK, gtk.RESPONSE_CLOSE)
+        rc = message.run()
+        if rc == gtk.RESPONSE_CLOSE:
+            message.destroy()
+
+    def info_dialog(self, msg):
+        message = gtk.MessageDialog(type=gtk.MESSAGE_INFO)
         message.set_markup(msg)
         message.add_button(gtk.STOCK_OK, gtk.RESPONSE_CLOSE)
         rc = message.run()
