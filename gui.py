@@ -83,53 +83,42 @@ class FrontEnd:
         filename = self.filename_entry.get_text()
         try:
             with TrackSplitter(filename) as ts:
-                rc, ipt = self.validate_input(ts.duration)
+                rc, ipt = self.validate_input(ts)
                 if not rc:
                     raise IOError('Invalid input: %s' % ipt)
+
                 for hbox in self.tracks:
-                    self.create_track(hbox)
+                    self.create_track(ts, hbox)
         except IOError, emsg:
             self.warning_dialog('WAV file split failed: %s' % emsg)
 
-    def validate_input(self, duration):
-        last_track = None
+    def hbox_unpack(self, hbox):
+        children = hbox.get_children()
+        start_text = children[1].get_text()
+        stop_text = children[3].get_text()
+
+        return start_text, stop_text
+
+    def validate_input(self, ts):
         for hbox in self.tracks:
-            children = hbox.get_children()
-            start_text = children[1].get_text()
-            stop_text = children[3].get_text()
+            start_text, stop_text = self.hbox_unpack(hbox)
 
             invalid_input = None
             if not re.match(r'^([0-9]+:)?[0-5][0-9]:[0-5][0-9]$', start_text):
                 invalid_input = start_text
             if not re.match(r'^([0-9]+:)?[0-5][0-9]:[0-5][0-9]$', stop_text):
                 invalid_input = stop_text
-            if invalid_input:
-                return False, 'Incorrect track time format: %s'
-
-            if last_track is not None and int(last_track.replace(':', None)) > \
-                    int(start_text.replace(':', None)):
-                return False, 'Tracks out of order, %s should be before %s' % \
-                        (last_track, stop_text)
-            if last_track is not None and int(start_text.replace(':', None)) > \
-                    int(stop_text.replace(':', None)):
-                return False, 'Tracks out of order, %s should be before %s' % \
-                        (last_track, stop_text)
-
-            last_track = stop_text
-
-        if last_track is not None:
-            fmt = None
-            if len(last_track.split(':')) == 3:
-                fmt = '%H:%M:%S'
-            else:
-                fmt = '%M:%S'
-            time_obj = datetime.strptime(last_track, fmt).time()
-            duration_obj = time(duration // 3600, duration % 3600 // 60, duration % 60)
-
-            if time_obj > duration_obj:
-                return False, 'Ending of last track extends past the end of the WAV file.'
+            if invalid_input is not None:
+                return False, 'Incorrect track time format: "%s". Rewrite in "[HH:]MM:SS" form.' \
+                        % invalid_input
 
         return True, 'Success'
+
+    def create_track(self, ts, hbox):
+        hbox_idx = self.tracks.get_children().index(hbox)
+        start_text, stop_text = self.hbox_unpack(hbox)
+
+        ts.create_track('Track' + str(hbox_idx) + '.wav', start_text, stop_text)
 
     def warning_dialog(self, msg):
         message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING)
