@@ -13,8 +13,6 @@ class TrackSplitter:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type is not None:
-            print traceback
         self.wave_file.close()
 
     def create_track(self, out_filename, start_text, stop_text):
@@ -40,6 +38,8 @@ class TrackSplitter:
 
     def write_file(self, out_filename, nsecs):
         data = self.read_nsecs(nsecs)
+        if not data:
+            raise IOError('End of file reached.')
 
         new_wave_file = wave.open(out_filename, 'w')
         new_wave_file.setparams(self.params)
