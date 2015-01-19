@@ -87,11 +87,11 @@ class FrontEnd:
             with TrackSplitter(filename) as ts:
                 rc, ipt = self.validate_input(ts)
                 if not rc:
-                    raise IOError('Invalid input: %s' % ipt)
+                    raise ValueError('Invalid input: %s' % ipt)
 
                 for hbox in self.tracks:
                     self.create_track(ts, hbox)
-        except IOError, emsg:
+        except (IOError, ValueError), emsg:
             self.warning_dialog('WAV file split failed: %s' % emsg)
 
         self.info_dialog('WAV file split complete!')
